@@ -57,7 +57,9 @@ const JobListings = () => {
                   }}
                 />
               </div>
-              <CardContent sx={{ justifyContent: "flex-start" }}>
+              <CardContent
+                sx={{ justifyContent: "flex-start", textAlign: "left" }}
+              >
                 <Box
                   component={"div"}
                   gap={"0.5rem"}
@@ -74,7 +76,7 @@ const JobListings = () => {
                     <p className="cards-sub-text">{job.location}</p>
                   </div>
                 </Box>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" className="card-salary">
                   Estimated Salary: {job.minJdSalary}-{job.maxJdSalary} ✅
                 </Typography>
                 <div className="description-container">
@@ -82,18 +84,29 @@ const JobListings = () => {
                     {job.jobDetailsFromCompany}
                   </Typography>
                 </div>
-
-                <Typography variant="body2">
-                  Minimum Experience: {job.minExp ? job.minExp : "1"} years
-                </Typography>
+                <div className="view-more">
+                  <a href={job.jdLink}>View Job</a>
+                </div>
+                <div style={{ marginBottom: 10 }}>
+                  <Typography
+                    variant="body2"
+                    className="info-container poc-info-container"
+                  >
+                    <h3>Minimum Experience:</h3>
+                  </Typography>
+                  <Typography variant="body2">
+                    {job.minExp ? job.minExp : "1"} years
+                  </Typography>
+                </div>
 
                 <Button
                   variant="contained"
                   sx={{
-                    bgcolor: "rgb(85, 239, 196)",
-                    color: "black",
-                    fontWeight: "500",
                     width: "100%",
+                    backgroundColor: "rgb(85, 239, 196)",
+                    color: "rgb(0, 0, 0)",
+                    fontWeight: "500",
+                    padding: "8px 18px",
                   }}
                 >
                   ⚡ Easy Apply
