@@ -81,7 +81,8 @@
 }
 
 .cards-sub-text {
-    font-size: 13px
+    font-size: 13px;
+    margin: 0;
 }
 
 .jd-sub-title-text {
@@ -152,22 +153,29 @@
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
+    text-align: left;
 }
 .info-container>h3 {
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 1px;
     margin-bottom: 3px;
-    color: #8b8b8b
+    color: #8b8b8b;
+    margin:0;
+    padding: 0;
 }
 
 .info-container>h1 {
-    font-size: 20px
+    font-size: 20px;
+    margin:0;
+    padding: 0;
 }
 
 .info-container>h2 {
     font-size: 14px;
-    line-height: 1.5
+    line-height: 1.5;
+    margin:0;
+    padding: 0;
 }
 
 .poc-info-container {
