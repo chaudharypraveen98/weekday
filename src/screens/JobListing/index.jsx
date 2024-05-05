@@ -3,6 +3,8 @@ import { Box, Grid, CircularProgress } from "@mui/material";
 import JobCard from "../../components/JobCard";
 import { getJobListing } from "../../api";
 import Filters from "../../components/Filters";
+import { useDispatch, useSelector } from "react-redux";
+import { saveJobList } from "../../redux/reducers/JobReducer";
 
 // Debouncing Function
 function debounce(func, timeout) {
@@ -19,21 +21,20 @@ function debounce(func, timeout) {
 
 const JobListing = () => {
   const [page, setPage] = useState(0); // offset
-  const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
+  const reduxJobList = useSelector((state) => state.jobListing.job);
+  const dispatch = useDispatch();
 
   const fetchData = async (pageNumber) => {
     setLoading(true);
     try {
       const response = await getJobListing(pageNumber);
       if (response?.jdList?.length > 0) {
-        setJobData((prevData) => ({
-          ...prevData,
-          jdList: prevData
-            ? [...prevData?.jdList, ...response?.jdList]
-            : response?.jdList,
-        }));
+        const newArray = reduxJobList
+          ? [...reduxJobList, ...response.jdList]
+          : response?.jdList;
+        dispatch(saveJobList(newArray));
         setPage(pageNumber + 1); // Increasing the page/offset for next api call
       }
     } catch (error) {
@@ -78,7 +79,12 @@ const JobListing = () => {
       <Filters />
       <Box
         ref={containerRef}
-        style={{ overflowY: "scroll", maxHeight: "90vh", position: "relative" }}
+        style={{
+          overflowY: "scroll",
+          maxHeight: "90vh",
+          position: "relative",
+          padding: "0 5%",
+        }}
       >
         <Grid
           container
@@ -86,8 +92,8 @@ const JobListing = () => {
           justifyContent={"center"}
           alignItems={"flex-start"}
         >
-          {jobData ? (
-            <JobCard data={jobData} />
+          {reduxJobList ? (
+            <JobCard data={reduxJobList} />
           ) : (
             <Box
               style={{

@@ -1,59 +1,107 @@
-import React from "react";
+import React, { useMemo } from "react";
 import MultiSelect from "react-select";
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 import styles from "./Filters.module.css";
+import { useSelector } from "react-redux";
+import { capitalizeWords } from "../../utils/commonFunctions";
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
-const top100Films = [
-  { label: "The Shawshank Redemption", year: 1994 },
-  { label: "The Godfather", year: 1972 },
-  { label: "The Godfather: Part II", year: 1974 },
-  { label: "The Dark Knight", year: 2008 },
-  { label: "12 Angry Men", year: 1957 },
-  { label: "Schindler's List", year: 1993 },
-  { label: "Pulp Fiction", year: 1994 },
-];
 const Filters = () => {
+  const reduxJobList = useSelector((state) => state.jobListing.job);
+  const [minSalaryOptions, experienceOptions, companyOptions, roleOptions] =
+    useMemo(() => {
+      let minSalaryOptions = [],
+        experienceOptions = [],
+        companyUniqueValue = new Set([]),
+        companyOptions = [],
+        roleUniqueValue = new Set([]),
+        roleOptions = [];
+
+      const numbers = Array.from({ length: 10 }, (_, index) => index + 1);
+      numbers?.forEach((exp) => {
+        experienceOptions.push({
+          label: exp,
+          value: exp,
+        });
+        minSalaryOptions.push({
+          label: `$ ${exp * 10}`,
+          value: exp * 10,
+        });
+      });
+
+      reduxJobList?.forEach((jobItem) => {
+        companyUniqueValue.add(jobItem?.companyName);
+        roleUniqueValue.add(jobItem?.jobRole);
+      });
+      companyUniqueValue.forEach((value) => {
+        companyOptions.push({
+          label: capitalizeWords(value),
+          value: value,
+        });
+      });
+      roleUniqueValue.forEach((value) => {
+        roleOptions.push({
+          label: capitalizeWords(value),
+          value: value,
+        });
+      });
+      return [minSalaryOptions, experienceOptions, companyOptions, roleOptions];
+    }, [reduxJobList]);
   return (
     <div className={styles.filterContainer}>
-      <div className={styles.filterRow}>
-        <MultiSelect
-          defaultValue={[options[0], options[1]]}
-          isMulti
-          name="colors"
-          options={options}
-          className="basic-multi-select"
-          classNamePrefix="select"
-        />
-        <MultiSelect
-          defaultValue={options[0]}
-          name="colors1"
-          options={options}
-          className="basic-multi-select"
-          classNamePrefix="select"
-        />
-        <MultiSelect
-          defaultValue={options[0]}
-          name="colors2"
-          options={options}
-          className="basic-multi-select"
-          classNamePrefix="select"
-        />
-      </div>
-      <div className={styles.filterRow}>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={top100Films}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Movie" />}
-        />
-      </div>
+      <MultiSelect
+        defaultValue={[roleOptions[0], roleOptions[1]]}
+        isMulti
+        name="roles"
+        options={roleOptions}
+        className="basic-multi-select"
+        classNamePrefix="select"
+        placeholder="Roles "
+      />
+      <MultiSelect
+        name="experience"
+        options={experienceOptions}
+        className="basic-multi-select"
+        classNamePrefix="select"
+        placeholder="Experience"
+      />
+      <MultiSelect
+        name="min-salary"
+        options={minSalaryOptions}
+        className="basic-multi-select"
+        classNamePrefix="select"
+        placeholder="Minimum Base Pay Salary"
+      />
+
+      <Autocomplete
+        disablePortal
+        id="company-name"
+        options={companyOptions}
+        sx={{ width: 300, height: 36, lineHeight: "36px" }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Select Company Name"
+            sx={[
+              {
+                ">div": {
+                  lineHeight: "38px !important",
+                  padding: "0px !important",
+                },
+                " input": {
+                  height: "34px !important",
+                  padding: "2px 7px !important",
+                },
+                label: {
+                  lineHeight: "1rem !important",
+                  marginTop: "-5px",
+                },
+              },
+              { height: 36, lineHeight: "36px" },
+            ]}
+          />
+        )}
+      />
     </div>
   );
 };

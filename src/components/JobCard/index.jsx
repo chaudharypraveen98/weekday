@@ -17,13 +17,13 @@ function getRandomValue() {
 const JobCard = ({ data = [] }) => {
   return (
     <>
-      {data.jdList.map((jobItem, index) => (
+      {data?.map((jobItem, index) => (
         <Grid
           item
           xs={12}
           md={6}
           lg={4}
-          key={index}
+          key={`${jobItem?.companyName} ${index}`}
           className={styles.jobCardContainer}
         >
           <Card
@@ -82,7 +82,7 @@ const JobCard = ({ data = [] }) => {
               </div>
               <div style={{ marginBottom: 10 }}>
                 <Typography
-                  variant="body2"
+                  variant="div"
                   className={`${styles.infoContainer} ${styles.jobRequirement}`}
                 >
                   <h3>Minimum Experience:</h3>
