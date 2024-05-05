@@ -1,12 +1,10 @@
-import './App.css'
-import JobListings from "./components/dashboard";
+import "./styles.css";
+import JobListing from "./screens/JobListing";
 
-function App() {
+export default function App() {
   return (
-    <>
-      <JobListings />
-    </>
+    <div className="App">
+      <JobListing />
+    </div>
   );
 }
-
-export default App
