@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
-import MultiSelect from "react-select";
+import Select from "react-select";
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 import styles from "./Filters.module.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { capitalizeWords } from "../../utils/commonFunctions";
+import { createFilteredJobList } from "../../redux/reducers/JobReducer";
 
 const Filters = () => {
   const reduxJobList = useSelector((state) => state.jobListing.job);
@@ -47,9 +48,40 @@ const Filters = () => {
       });
       return [minSalaryOptions, experienceOptions, companyOptions, roleOptions];
     }, [reduxJobList]);
+
+  const dispatch = useDispatch();
+  function handleFilterChange(filterName, values) {
+    const data = reduxJobList;
+    let filteredData;
+    switch (filterName) {
+      case "roles": {
+        const filterTestData = values?.map((val) => val?.value);
+        filteredData = data.filter((item) => {
+          return filterTestData.includes(item.jobRole);
+        });
+        break;
+      }
+      case "experience":
+        filteredData = data.filter((item) => values?.value <= item.minExp);
+        break;
+      case "salary":
+        filteredData = data.filter((item) => values?.value <= item.minJdSalary);
+        break;
+      case "company name":
+        console.log("values", values);
+        filteredData = data.filter((item) =>
+          item.companyName.toLowerCase().includes(values?.value.toLowerCase())
+        );
+        break;
+      default:
+        filteredData = data;
+        break;
+    }
+    dispatch(createFilteredJobList(filteredData));
+  }
   return (
     <div className={styles.filterContainer}>
-      <MultiSelect
+      <Select
         defaultValue={[roleOptions[0], roleOptions[1]]}
         isMulti
         name="roles"
@@ -57,20 +89,23 @@ const Filters = () => {
         className="basic-multi-select"
         classNamePrefix="select"
         placeholder="Roles "
+        onChange={(values) => handleFilterChange("roles", values)}
       />
-      <MultiSelect
+      <Select
         name="experience"
         options={experienceOptions}
         className="basic-multi-select"
         classNamePrefix="select"
         placeholder="Experience"
+        onChange={(values) => handleFilterChange("experience", values)}
       />
-      <MultiSelect
+      <Select
         name="min-salary"
         options={minSalaryOptions}
         className="basic-multi-select"
         classNamePrefix="select"
         placeholder="Minimum Base Pay Salary"
+        onChange={(values) => handleFilterChange("salary", values)}
       />
 
       <Autocomplete
@@ -78,6 +113,7 @@ const Filters = () => {
         id="company-name"
         options={companyOptions}
         sx={{ width: 300, height: 36, lineHeight: "36px" }}
+        onChange={(e, val) => handleFilterChange("company name", val)}
         renderInput={(params) => (
           <TextField
             {...params}

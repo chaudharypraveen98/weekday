@@ -24,6 +24,9 @@ const JobListing = () => {
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const reduxJobList = useSelector((state) => state.jobListing.job);
+  const reduxFilteredJobList = useSelector(
+    (state) => state.jobListing.filteredJob
+  );
   const dispatch = useDispatch();
 
   const fetchData = async (pageNumber) => {
@@ -93,7 +96,13 @@ const JobListing = () => {
           alignItems={"flex-start"}
         >
           {reduxJobList ? (
-            <JobCard data={reduxJobList} />
+            <JobCard
+              data={
+                reduxFilteredJobList.length > 0
+                  ? reduxFilteredJobList
+                  : reduxJobList
+              }
+            />
           ) : (
             <Box
               style={{
