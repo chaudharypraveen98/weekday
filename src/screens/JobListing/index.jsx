@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Box, Grid, CircularProgress } from "@mui/material";
 import JobCard from "../../components/JobCard";
 import { getJobListing } from "../../api";
+import Filters from "../../components/Filters";
 
 // Debouncing Function
 function debounce(func, timeout) {
@@ -74,9 +75,10 @@ const JobListing = () => {
 
   return (
     <Box>
+      <Filters />
       <Box
         ref={containerRef}
-        style={{ overflowY: "scroll", maxHeight: "80vh", position: "relative" }}
+        style={{ overflowY: "scroll", maxHeight: "90vh", position: "relative" }}
       >
         <Grid
           container
